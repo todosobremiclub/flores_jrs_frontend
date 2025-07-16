@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "744880037983",
+    "project_id": "floresjrs-b6d5e",
+    "storage_bucket": "floresjrs-b6d5e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:744880037983:android:acce8bf955a1e85e047bea",
+        "android_client_info": {
+          "package_name": "com.floresjuniorsapp.todoapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAumaI2RUBABHcF8JXDii3fZEdgzvXWlzI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
