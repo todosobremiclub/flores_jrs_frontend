@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb, defaultTargetPlatform, TargetPlatform;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
 
-import 'models/socio.dart';
 import 'screens/login_screen.dart';
-import 'screens/home_screen.dart';
 import 'firebase_options.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -23,12 +20,36 @@ void main() async {
 
 if (!kIsWeb) {
   await FirebaseMessaging.instance.requestPermission();
-  String? fcmToken = await FirebaseMessaging.instance.getToken();
-  print('🔑 FCM Token del dispositivo: $fcmToken');
-
-  // 👉 Suscripción al tópico 'todos'
-  await FirebaseMessaging.instance.subscribeToTopic('todos');
-  print('📌 Suscrito al tópico: todos');
+  
+  // En iOS, esperar a que el token APNS esté disponible
+  String? fcmToken;
+  try {
+    // Para iOS, primero verificar si hay token APNS
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      String? apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+      if (apnsToken != null) {
+        fcmToken = await FirebaseMessaging.instance.getToken();
+      } else {
+        print('⚠️ Token APNS no disponible aún, se obtendrá más tarde');
+        // Escuchar cuando el token esté disponible
+        FirebaseMessaging.instance.onTokenRefresh.listen((token) {
+          print('🔑 FCM Token del dispositivo: $token');
+          FirebaseMessaging.instance.subscribeToTopic('todos');
+        });
+      }
+    } else {
+      fcmToken = await FirebaseMessaging.instance.getToken();
+    }
+    
+    if (fcmToken != null) {
+      print('🔑 FCM Token del dispositivo: $fcmToken');
+      // 👉 Suscripción al tópico 'todos'
+      await FirebaseMessaging.instance.subscribeToTopic('todos');
+      print('📌 Suscrito al tópico: todos');
+    }
+  } catch (e) {
+    print('⚠️ Error al obtener FCM token: $e');
+  }
 }
 
 
