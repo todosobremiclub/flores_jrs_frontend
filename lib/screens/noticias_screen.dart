@@ -26,7 +26,7 @@ class _NoticiasScreenState extends State<NoticiasScreen> {
   Future<List<Noticia>> _filtrarNoticiasPorSocio() async {
     final todas = await NoticiaService().obtenerNoticias(widget.token);
 
-    final categoriaSocio = widget.socio.categoria?.toLowerCase() ?? '';
+    final categoriaSocio = widget.socio.categoria.toLowerCase() ?? '';
     final anioSocio = widget.socio.fechaNacimiento?.substring(0, 4) ?? '';
 
     return todas.where((n) {
